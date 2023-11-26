@@ -10,5 +10,23 @@ lazy_static="1.4.0"
 ndarray = "0.15.4"
 zmq="0.10.0"
 ctrlc="3.4.1"
-sqlx = { version = "0.5.7", features = ["runtime-async-std", "macros"] }
+chrono = "0.4.31"
+rayon = "1.5.3"
+serde = {version ="1.0.130" , features = ["derive"]}
+serde_json = "1.0.108"
+log = "0.4"
+env_logger = "0.10.0"
+
+
+#polars = { version = "0.20.0", features = ["json", "parquet", "dtype-datetime"]  }
+#sqlx = { version = "0.5.7", features = ["runtime-async-std", "macros"] }
 #sqlx-mssql = "0.5.0"
+
+[profile.dev.package."*"]
+opt-level=0
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"

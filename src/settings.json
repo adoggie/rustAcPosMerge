@@ -1,0 +1,9 @@
+{
+"max_follow_depth": 10,
+"merge_interval": 1,
+"ac_file": "samples/acfollow.txt",
+"symbol_file": "samples/symbols.json",
+"_db_uri": "mysql://localhost:27017",
+"zmq_pos_sub_addr": "tcp://localhost:5555",
+"zmq_pos_merged_pub_addr": "tcp://localhost:5556"
+}

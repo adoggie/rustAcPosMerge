@@ -1,0 +1,60 @@
+
+fn macd(data: &[f64], short_period: usize, long_period: usize, signal_period: usize) -> Option<Vec<f64>> {
+    if data.len() < long_period {
+        return None;
+    }
+
+    let ema_short = ema(data, short_period)?;
+    let ema_long = ema(data, long_period)?;
+    let macd_line = subtract_vectors(&ema_short, &ema_long)?;
+
+    if macd_line.len() < signal_period {
+        return None;
+    }
+
+    let signal_line = ema(&macd_line, signal_period)?;
+    let histogram = subtract_vectors(&macd_line[signal_period - 1..], &signal_line)?;
+
+    Some(histogram)
+}
+
+fn ema(data: &[f64], period: usize) -> Option<Vec<f64>> {
+    if data.len() < period {
+        return None;
+    }
+
+    let mut result = Vec::with_capacity(data.len() - period + 1);
+    let alpha = 2.0 / (period + 1) as f64;
+
+    let mut ema_prev = data[..period].iter().sum::<f64>() / period as f64;
+    result.push(ema_prev);
+
+    for value in data[period..].iter() {
+        let ema = alpha * value + (1.0 - alpha) * ema_prev;
+        result.push(ema);
+        ema_prev = ema;
+    }
+
+    Some(result)
+}
+
+fn subtract_vectors(a: &[f64], b: &[f64]) -> Option<Vec<f64>> {
+    if a.len() != b.len() {
+        return None;
+    }
+
+    Some(a.iter().zip(b.iter()).map(|(&x, &y)| x - y).collect())
+}
+
+fn main() {
+    let data = [10.0, 12.0, 11.0, 13.0, 14.0, 15.0, 13.0, 12.0, 11.0];
+    let short_period = 3;
+    let long_period = 6;
+    let signal_period = 4;
+
+    if let Some(histogram) = macd(&data, short_period, long_period, signal_period) {
+        println!("MACD Histogram: {:?}", histogram);
+    } else {
+        println!("Insufficient data for MACD calculation.");
+    }
+}
